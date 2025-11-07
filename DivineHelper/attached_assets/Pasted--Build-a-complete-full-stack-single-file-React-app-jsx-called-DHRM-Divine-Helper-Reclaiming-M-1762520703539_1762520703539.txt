@@ -1,0 +1,55 @@
+"Build a complete, full-stack, single-file React app (.jsx) called DHRM (Divine Helper, Reclaiming Moksha). This is a spiritual wellness app that must be fully functional.
+
+Core Technologies:
+
+Frontend: React (with Hooks) and Tailwind CSS.
+
+Backend: Firebase. Use Firestore for the database and Firebase Authentication (anonymous sign-in) to give each user a unique ID.
+
+AI Model: Gemini API (gemini-2.5-flash-preview-09-2025).
+
+App Features:
+
+Aesthetic: Must have a beautiful, Hindu-inspired aesthetic (saffron, gold, maroon, and cream colors) and be fully responsive.
+
+Multi-Page Navigation: Use React state to manage page navigation between 'Home', 'Divya Drishti', 'DHRM Chat', 'Dhyan', 'Books', and 'About Us'.
+
+Language (i18n): Must support both English ('en') and Hindi ('hi') translations.
+
+Divya Drishti Page:
+
+This page must fetch a random quote from a public Firestore collection (/artifacts/{appId}/public/data/drishtiQuotes).
+
+The page should have a 'New Drishti' button to fetch another random quote.
+
+Dhyan (Meditation) Page:
+
+Implement a 10-minute countdown timer with 'Start', 'Pause', and 'Reset' buttons.
+
+When 'Start' is pressed, play a looping, soothing audio file from a provided URL.
+
+Pause the audio when 'Pause' or 'Reset' is clicked.
+
+DHRM Chat (Core AI Feature):
+
+This must be a functional chat interface that connects to the Gemini API.
+
+System Instruction: The AI must act as a 'Vedic-grounded philosophical coach,' providing wise, calm, and supportive answers based on ancient scriptures.
+
+Grounding: The AI must use the Google Search grounding tool to ensure its answers are based on verifiable sources (like the Bhagavad Gita, Vedas, Upanishads).
+
+Citations: Every answer from the AI must include a source citation (e.g., '(Bhagavad Gita, 2.47)').
+
+Chat History: Save the entire chat history (user and AI messages) to a private Firestore collection specific to the user (/artifacts/{appId}/users/{userId}/chatHistory).
+
+Books Page:
+
+Create a public Firestore collection (/artifacts/{appId}/public/data/books) to store the text of holy books.
+
+This page should list the books. Clicking a book opens a modal and displays the text fetched from Firestore.
+
+Contact Us Page:
+
+Create a functional 'Contact Us' form.
+
+On submit, the form must save the message to a public Firestore collection (/artifacts/{appId}/public/data/contactMessages)."
