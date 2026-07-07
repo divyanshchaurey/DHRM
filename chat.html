@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHRM | Divine Helper, Reclaiming Moksha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="antialiased h-screen overflow-hidden flex flex-col">
+
+    <!-- Rotating 3D Rangoli Chakra Background -->
+    <div class="fixed inset-0 pointer-events-none flex items-center justify-center -z-20 overflow-hidden" style="perspective: 1000px;">
+        <div id="chakra-bg" class="relative w-[150vmin] h-[150vmin] md:w-[120vmin] md:h-[120vmin] opacity-[0.35] transition-transform duration-75 ease-out will-change-transform" style="transform-style: preserve-3d;">
+            
+            <!-- Deepest Layer: Wide aura -->
+            <svg class="absolute inset-0 w-full h-full chakra-layer-1" style="transform: translateZ(-40px);" viewBox="0 0 200 200" stroke="currentColor" fill="none" stroke-width="1.5">
+                <circle cx="100" cy="100" r="90" stroke-width="2" opacity="0.3"/>
+                <path d="M 100 10 Q 140 50 190 100 Q 140 150 100 190 Q 60 150 10 100 Q 60 50 100 10" opacity="0.4" />
+                <path d="M 100 10 Q 140 50 190 100 Q 140 150 100 190 Q 60 150 10 100 Q 60 50 100 10" transform="rotate(45 100 100)" opacity="0.4" />
+            </svg>
+
+            <!-- Middle Layer: Intricate rangoli petals -->
+            <svg class="absolute inset-0 w-full h-full chakra-layer-2" style="transform: translateZ(0px);" viewBox="0 0 200 200" stroke="currentColor" fill="none">
+                <defs>
+                    <filter id="glow-3d" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="2.5" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+                <g filter="url(#glow-3d)">
+                    <circle cx="100" cy="100" r="72" stroke-width="2"/>
+                    <circle cx="100" cy="100" r="66" stroke-width="0.5" stroke-dasharray="3 4"/>
+                    <!-- 12 petals -->
+                    <g stroke-width="1.5">
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(30 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(60 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(90 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(120 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(150 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(180 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(210 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(240 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(270 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(300 100 100)" />
+                        <path d="M 100 28 Q 115 65 100 100 Q 85 65 100 28" transform="rotate(330 100 100)" />
+                    </g>
+                </g>
+            </svg>
+
+            <!-- Top Layer: Center Bindu and core star -->
+            <svg class="absolute inset-0 w-full h-full chakra-layer-3" style="transform: translateZ(40px);" viewBox="0 0 200 200" stroke="currentColor" fill="none">
+                <circle cx="100" cy="100" r="22" stroke-width="2"/>
+                <circle cx="100" cy="100" r="14" stroke-width="1"/>
+                <circle cx="100" cy="100" r="6" stroke-width="0" fill="currentColor"/>
+                <g stroke-width="1.5">
+                    <line x1="100" y1="78" x2="100" y2="122" />
+                    <line x1="100" y1="78" x2="100" y2="122" transform="rotate(45 100 100)" />
+                    <line x1="100" y1="78" x2="100" y2="122" transform="rotate(90 100 100)" />
+                    <line x1="100" y1="78" x2="100" y2="122" transform="rotate(135 100 100)" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="rangoli-container mb-8">
+            <svg class="rangoli-svg" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="rangoliGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#f6dc8e" />
+                        <stop offset="45%" stop-color="#d4af37" />
+                        <stop offset="100%" stop-color="#f1cf6d" />
+                    </linearGradient>
+                </defs>
+
+                <g class="rangoli-layer outer">
+                    <circle class="rangoli-path" style="--path-delay: 100ms;" cx="50" cy="50" r="42" />
+                    <path class="rangoli-path" style="--path-delay: 250ms;" d="M50 7 Q62 24 50 41 Q38 24 50 7" />
+                    <path class="rangoli-path" style="--path-delay: 350ms;" d="M50 93 Q62 76 50 59 Q38 76 50 93" />
+                    <path class="rangoli-path" style="--path-delay: 450ms;" d="M7 50 Q24 38 41 50 Q24 62 7 50" />
+                    <path class="rangoli-path" style="--path-delay: 550ms;" d="M93 50 Q76 38 59 50 Q76 62 93 50" />
+                    <path class="rangoli-path" style="--path-delay: 650ms;" d="M20 20 Q35 30 44 44 Q30 35 20 20" />
+                    <path class="rangoli-path" style="--path-delay: 750ms;" d="M80 20 Q70 35 56 44 Q65 30 80 20" />
+                    <path class="rangoli-path" style="--path-delay: 850ms;" d="M20 80 Q30 65 44 56 Q35 70 20 80" />
+                    <path class="rangoli-path" style="--path-delay: 950ms;" d="M80 80 Q65 70 56 56 Q70 65 80 80" />
+                </g>
+
+                <g class="rangoli-layer middle">
+                    <circle class="rangoli-path" style="--path-delay: 700ms;" cx="50" cy="50" r="30" />
+                    <rect class="rangoli-path" style="--path-delay: 820ms;" x="29" y="29" width="42" height="42" transform="rotate(45 50 50)" />
+                    <rect class="rangoli-path" style="--path-delay: 940ms;" x="34" y="34" width="32" height="32" />
+                    <path class="rangoli-path" style="--path-delay: 1060ms;" d="M50 20 L58 50 L50 80 L42 50 Z" />
+                    <path class="rangoli-path" style="--path-delay: 1180ms;" d="M20 50 L50 42 L80 50 L50 58 Z" />
+                </g>
+
+                <g class="rangoli-layer inner">
+                    <circle class="rangoli-path" style="--path-delay: 1300ms;" cx="50" cy="50" r="14" />
+                    <circle class="rangoli-path" style="--path-delay: 1420ms;" cx="50" cy="50" r="6" />
+                    <path class="rangoli-path" style="--path-delay: 1540ms;" d="M50 37 Q55 45 63 50 Q55 55 50 63 Q45 55 37 50 Q45 45 50 37 Z" />
+                </g>
+            </svg>
+        </div>
+        <div class="text-[#d4af37] text-xs font-bold tracking-[0.3em] uppercase animate-pulse">Initializing Moksha</div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="flex-shrink-0 relative w-full z-50 px-6 py-4 flex items-center justify-between border-b border-white/10 bg-black/80 backdrop-blur-xl">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-[#d4af37] rounded-xl flex items-center justify-center font-extrabold text-black">D</div>
+            <span class="text-xl font-bold tracking-tighter">DHRM</span>
+        </div>
+        
+        <div class="hidden md:flex gap-8 text-sm font-medium">
+            <a href="index.html" class="hover:text-[#d4af37] transition-colors">Home</a>
+            <a href="chat.html" class="text-[#d4af37] hover:text-[#d4af37] transition-colors">Chat</a>
+            <a href="philosophy.html" class="hover:text-[#d4af37] transition-colors">Philosophy</a>
+            <a href="shanti.html" class="hover:text-[#d4af37] transition-colors">Shanti Room</a>
+            <a href="karm.html" class="hover:text-[#d4af37] transition-colors">Daily Karm</a>
+            <a href="journal.html" class="hover:text-[#d4af37] transition-colors">Journal</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button id="theme-toggle-btn" class="hidden md:block text-sm font-medium hover:text-[#d4af37] transition-colors">
+                Light Theme
+            </button>
+            <button id="lang-toggle-btn" class="hidden md:block text-sm font-medium hover:text-[#d4af37] transition-colors">
+                EN
+            </button>
+            <button id="login-btn" class="hidden md:block text-sm font-medium hover:text-[#d4af37] transition-colors">Login</button>
+            <button class="gold-btn px-6 py-2.5 rounded-full text-sm font-bold" onclick="window.location.href='chat.html'">Get Started</button>
+            <button class="md:hidden p-2" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Chat Workspace Section (Full Screen) -->
+    <main class="flex-1 h-0 w-full p-4 md:p-6 flex flex-col relative box-border">
+        <div class="reveal glass-card no-hover rounded-3xl w-full h-full flex flex-col overflow-hidden p-4 md:p-6 border border-white/10">
+            <div class="flex flex-col md:flex-row gap-6 h-full min-h-0 w-full">
+                
+                <!-- Sidebar (Previous Chats) -->
+                <div class="w-full md:w-80 flex flex-col border-b md:border-b-0 md:border-r border-white/10 pb-4 md:pb-0 md:pr-6 flex-shrink-0 min-h-0">
+                    <button id="new-chat-btn" class="gold-btn w-full py-3 rounded-full text-sm font-bold mb-4 flex items-center justify-center gap-2">
+                        <span>+</span> New Chat
+                    </button>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Previous Chats</h4>
+                    <div id="previous-chats-list" class="flex-1 overflow-y-auto pr-2 chat-scroll flex flex-col gap-2">
+                        <div class="text-xs text-gray-500 italic p-3 text-center">Login to save and view previous chats.</div>
+                    </div>
+                </div>
+                
+                <!-- Chat Area -->
+                <div class="flex-1 flex flex-col min-h-0">
+                    <!-- Title area -->
+                    <div class="text-center md:text-left mb-4 flex-shrink-0 flex justify-between items-center">
+                        <div>
+                            <div class="feature-chip inline-flex text-[9px] font-bold tracking-[0.2em] uppercase px-2.5 py-0.5 rounded-full mb-1">Divine Guidance</div>
+                            <h3 class="text-2xl font-extrabold text-gradient">DHRM Chat</h3>
+                        </div>
+                        <p class="text-xs text-gray-400 hidden md:block">Ask a question and get a verse-linked reflective answer.</p>
+                    </div>
+                    
+                    <!-- Messages Panel -->
+                    <div id="chat-messages" class="chat-scroll bg-black/40 border border-white/10 rounded-2xl p-5 flex-1 overflow-y-auto space-y-6 flex flex-col min-h-0">
+                        <div class="chat-bubble-dhrm rounded-2xl p-5 max-w-[85%] self-start">
+                            Namaste. I am the Divine Helper. Ask what is on your mind. You can start with stress, purpose, fear, or work.
+                        </div>
+                    </div>
+                    
+                    <!-- Message Form & Input -->
+                    <div class="flex-shrink-0">
+                        <div id="chat-typing" class="hidden flex items-center gap-2 text-xs text-[#d4af37] mt-2 ml-2">
+                            <span>DHRM is contemplating</span>
+                            <div class="flex gap-1 items-center">
+                                <span class="w-1.5 h-1.5 bg-[#d4af37] rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                                <span class="w-1.5 h-1.5 bg-[#d4af37] rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                                <span class="w-1.5 h-1.5 bg-[#d4af37] rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                            </div>
+                        </div>
+                        <form id="chat-form" class="mt-4 flex gap-3 items-center">
+                            <button type="button" id="speaker-btn" class="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#d4af37]/20 transition-colors text-lg shrink-0" title="Toggle Voice Output">🔊</button>
+                            <div class="relative flex-1 flex items-center">
+                                <input id="chat-input" type="text" autocomplete="off" class="w-full bg-black/50 border border-white/10 rounded-full pl-5 pr-12 py-3 text-base outline-none focus:border-[#d4af37]/60" placeholder="Type your question..." />
+                                <button type="button" id="mic-btn" class="absolute right-2 w-9 h-9 rounded-full bg-white/5 hover:bg-[#d4af37]/20 flex items-center justify-center transition-colors text-base" title="Voice Input">🎤</button>
+                            </div>
+                            <button type="submit" class="gold-btn px-6 py-3 rounded-full text-sm font-bold shrink-0">Send</button>
+                        </form>
+                        <div class="text-[10px] text-gray-500 text-center mt-2">
+                            Reflections generated by AI under the guidance of ancient scriptures. Always prioritize right action (Dharma).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Book Reader Modal -->
+    <div id="book-reader-modal" class="hidden fixed inset-0 z-[70] bg-black/80 backdrop-blur-sm p-5 md:p-8">
+        <div class="max-w-4xl mx-auto glass-card border border-[#d4af37]/35 rounded-3xl p-6 md:p-8 relative">
+            <button id="book-reader-close" class="absolute top-4 right-4 w-9 h-9 rounded-full border border-white/20 hover:border-[#d4af37]/60">X</button>
+            <h3 id="book-reader-title" class="text-2xl md:text-3xl font-extrabold text-gradient mb-5">Bhagavad Gita</h3>
+            <div id="book-reader-content" class="text-gray-300 leading-relaxed text-sm md:text-base max-h-[65vh] overflow-y-auto chat-scroll"></div>
+        </div>
+    </div>
+
+
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-black p-8 flex flex-col justify-center items-center">
+        <button onclick="toggleMenu()" class="absolute top-8 right-8 p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="flex flex-col gap-10 text-3xl font-bold text-center">
+            <a href="philosophy.html" onclick="toggleMenu()">Philosophy</a>
+            <a href="#" onclick="toggleMenu()">Scripts</a>
+            <a href="#daily-drishti" onclick="toggleMenu()">Daily Drishti</a>
+            <a href="#" onclick="toggleMenu()">The Mission</a>
+            <button id="theme-toggle-btn-mobile" class="border border-current/20 py-3 px-8 rounded-2xl text-lg">Light Theme</button>
+            <button class="gold-btn py-4 px-10 rounded-2xl text-lg" onclick="toggleMenu();document.getElementById('divine-chat').scrollIntoView({behavior: 'smooth'});">Get Started</button>
+        </div>
+    </div>
+
+        <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
