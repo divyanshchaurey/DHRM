@@ -1,3 +1,5 @@
+console.log("%c✨ DHRM | Created with Devotion by Divyansh Chaurey ✨", "color: #d4af37; background: #05070a; padding: 8px 16px; border: 1px solid #d4af37; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: bold; text-shadow: 0 0 10px rgba(212,175,55,0.4);");
+
 // Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDfdC_0WmnGSewlf_8jFruICQbgNZacV-Y",
@@ -1418,4 +1420,68 @@ async function saveMessageToFirestore(sessionId, messageObj) {
     } catch (e) {
         console.error("Error saving message to Firestore:", e);
     }
+}
+
+// -------------------------------------
+// SECRET LOGO TRIPLE CLICK EASTER EGG
+// -------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    // We attach it to body click delegator to capture dynamically loaded logo elements safely
+    document.body.addEventListener('click', (e) => {
+        const logo = e.target.closest('.logo-click-egg');
+        if (!logo) return;
+        
+        // Track click sequence
+        if (!window.logoClicks) {
+            window.logoClicks = 0;
+            window.logoClickTimeout = null;
+        }
+        
+        window.logoClicks++;
+        
+        if (window.logoClicks === 3) {
+            window.logoClicks = 0;
+            if (window.logoClickTimeout) clearTimeout(window.logoClickTimeout);
+            showSecretModal();
+            e.preventDefault();
+            return false;
+        }
+        
+        if (window.logoClickTimeout) clearTimeout(window.logoClickTimeout);
+        window.logoClickTimeout = setTimeout(() => {
+            window.logoClicks = 0;
+        }, 1000); // 1 second window
+    });
+});
+
+function showSecretModal() {
+    let eggModal = document.getElementById('secret-egg-modal');
+    if (!eggModal) {
+        eggModal = document.createElement('div');
+        eggModal.id = 'secret-egg-modal';
+        eggModal.className = 'fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 transition-all duration-500 opacity-0 pointer-events-none';
+        eggModal.innerHTML = `
+            <div class="max-w-md w-full glass-card border border-[#d4af37]/45 rounded-[32px] p-8 md:p-10 text-center shadow-2xl relative overflow-hidden bg-zinc-950 text-white">
+                <div class="absolute -top-32 -left-32 w-64 h-64 bg-[#d4af37] opacity-20 rounded-full blur-[80px]"></div>
+                <div class="text-5xl mb-6 animate-pulse">🕉️</div>
+                <h3 class="text-2xl font-extrabold mb-3 text-gradient">Moksha Sanctuary</h3>
+                <p class="text-[#d4af37] text-sm font-semibold tracking-widest uppercase mb-6">Orchestrator Identified</p>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 text-left">
+                    <p class="text-base leading-relaxed text-gray-200">
+                        "This sanctuary was crafted with devotion and logic by <span class="text-[#d4af37] font-bold">Divyansh Chaurey</span>."
+                    </p>
+                </div>
+                <button id="close-egg-btn" class="gold-btn px-8 py-2.5 rounded-full text-sm font-bold w-full">Close Sanctuary</button>
+            </div>
+        `;
+        document.body.appendChild(eggModal);
+        
+        // Close event
+        document.getElementById('close-egg-btn').addEventListener('click', () => {
+            eggModal.classList.add('opacity-0', 'pointer-events-none');
+        });
+    }
+    
+    // Show modal
+    eggModal.classList.remove('opacity-0', 'pointer-events-none');
 }
