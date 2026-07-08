@@ -77,16 +77,15 @@ User says: "${message}"`;
     }
 });
 
-// Load and cache Gita data on startup
-const fs = require('fs');
+// Load and cache Gita data on startup via require for serverless bundler compatibility
 let gitaChapters = [];
 let gitaVerses = [];
 let gitaTranslations = [];
 
 try {
-    gitaChapters = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'chapters.json'), 'utf8'));
-    gitaVerses = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'verses.json'), 'utf8'));
-    gitaTranslations = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'translations.json'), 'utf8'));
+    gitaChapters = require('./data/chapters.json');
+    gitaVerses = require('./data/verses.json');
+    gitaTranslations = require('./data/translations.json');
     console.log(`Gita data loaded: ${gitaChapters.length} chapters, ${gitaVerses.length} verses, ${gitaTranslations.length} translations.`);
 } catch (err) {
     console.error("Error loading local Gita data:", err);
