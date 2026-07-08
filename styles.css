@@ -461,3 +461,113 @@ body {
         body.light-theme #chat-input:focus {
             box-shadow: 0 0 20px rgba(142, 36, 0, 0.1);
         }
+
+        /* Meditation Player Light Theme Contrast Adjustments */
+        body.light-theme #meditation-player-modal {
+            background: radial-gradient(circle, #fffcf5 0%, #f4e9cf 100%) !important;
+        }
+        body.light-theme #player-close-btn,
+        body.light-theme #player-fullscreen-btn {
+            color: #5d4037 !important;
+        }
+        body.light-theme #player-close-btn:hover,
+        body.light-theme #player-fullscreen-btn:hover {
+            color: #8e2400 !important;
+        }
+        body.light-theme #player-play-btn {
+            background-color: #8e2400 !important;
+            color: #fffbf0 !important;
+            box-shadow: 0 8px 24px rgba(142, 36, 0, 0.25) !important;
+        }
+        body.light-theme #player-play-btn:hover {
+            box-shadow: 0 12px 32px rgba(142, 36, 0, 0.4) !important;
+        }
+        body.light-theme #meditation-player-modal .bg-white\/10 {
+            background-color: rgba(62, 39, 35, 0.15) !important;
+        }
+
+        /* Gyaan / Philosophy Scripture Reader Modal Light Theme overrides */
+        body.light-theme #book-reader-modal {
+            background-color: rgba(15, 10, 5, 0.6) !important;
+            backdrop-filter: blur(8px);
+        }
+        body.light-theme #book-reader-modal .glass-card {
+            background-color: #fffdf9 !important;
+            border-color: rgba(212, 175, 55, 0.45) !important;
+            box-shadow: 0 24px 60px rgba(142, 36, 0, 0.18) !important;
+            color: #3e2723 !important;
+        }
+        body.light-theme #book-reader-modal #book-reader-title {
+            background: linear-gradient(to right, #8e2400, #bf9000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body.light-theme #book-reader-modal select {
+            background-color: #fffcf5 !important;
+            color: #3e2723 !important;
+            border-color: rgba(142, 36, 0, 0.25) !important;
+        }
+        body.light-theme #book-reader-modal select:focus {
+            border-color: #8e2400 !important;
+        }
+        body.light-theme #book-reader-modal .text-gray-300 {
+            color: #4e342e !important;
+        }
+        body.light-theme #book-reader-modal .text-gray-400 {
+            color: #6d4c41 !important;
+        }
+        body.light-theme #book-reader-modal .text-gray-500 {
+            color: #8d6e63 !important;
+        }
+        body.light-theme #book-reader-modal .border-white\/10 {
+            border-color: rgba(142, 36, 0, 0.15) !important;
+        }
+        body.light-theme #book-reader-modal .gita-verse-btn {
+            color: #4e342e !important;
+            border-color: transparent !important;
+        }
+        body.light-theme #book-reader-modal .gita-verse-btn:hover {
+            background-color: rgba(142, 36, 0, 0.06) !important;
+            border-color: rgba(142, 36, 0, 0.15) !important;
+        }
+        body.light-theme #book-reader-modal .gita-verse-btn.bg-white\/10 {
+            background-color: rgba(142, 36, 0, 0.1) !important;
+            border-color: rgba(142, 36, 0, 0.35) !important;
+            color: #8e2400 !important;
+            font-weight: bold;
+        }
+        body.light-theme #book-reader-modal .bg-\[\#f97316\]\/5 {
+            background-color: rgba(230, 81, 0, 0.05) !important;
+            border-color: rgba(230, 81, 0, 0.25) !important;
+        }
+        body.light-theme #book-reader-modal .text-\[\#f97316\] {
+            color: #e65100 !important;
+        }
+        body.light-theme #book-reader-modal .bg-white\/5 {
+            background-color: rgba(142, 36, 0, 0.04) !important;
+            border-color: rgba(142, 36, 0, 0.15) !important;
+        }
+        body.light-theme #book-reader-close {
+            color: #5d4037 !important;
+            border-color: rgba(142, 36, 0, 0.25) !important;
+        }
+        body.light-theme #book-reader-close:hover {
+            color: #8e2400 !important;
+            border-color: #8e2400 !important;
+            background-color: rgba(142, 36, 0, 0.05) !important;
+        }
+
+        /* Daily Karm / Daily Drishti page overrides in Light Theme */
+        body.light-theme #daily-drishti .bg-black\/40 {
+            background-color: rgba(142, 36, 0, 0.04) !important;
+            border-color: rgba(142, 36, 0, 0.15) !important;
+        }
+        body.light-theme #daily-drishti .text-white {
+            color: #3e2723 !important;
+        }
+        body.light-theme #daily-drishti #drishti-quote {
+            color: #3e2723 !important;
+        }
+        body.light-theme #daily-drishti #drishti-citation {
+            color: #8e2400 !important;
+        }

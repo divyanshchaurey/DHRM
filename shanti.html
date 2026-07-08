@@ -117,9 +117,9 @@
         <div class="hidden md:flex gap-8 text-sm font-medium">
             <a href="index.html" class="hover:text-[#d4af37] transition-colors">Home</a>
             <a href="chat.html" class="hover:text-[#d4af37] transition-colors">Chat</a>
-            <a href="philosophy.html" class="hover:text-[#d4af37] transition-colors">Philosophy</a>
+            <a href="philosophy.html" class="hover:text-[#d4af37] transition-colors">Gyaan</a>
             <a href="shanti.html" class="hover:text-[#d4af37] transition-colors">Shanti Room</a>
-            <a href="karm.html" class="hover:text-[#d4af37] transition-colors">Daily Karm</a>
+            <a href="karm.html" class="hover:text-[#d4af37] transition-colors">Karm & Drishti</a>
             <a href="journal.html" class="hover:text-[#d4af37] transition-colors">Journal</a>
         </div>
 
@@ -151,46 +151,40 @@
                     <p class="text-emerald-100/70 text-lg">Find your center through guided meditation.</p>
                 </div>
                 
-                <div class="space-y-6 relative z-10">
+                <div class="flex flex-col md:flex-row gap-6 relative z-10 items-stretch w-full">
                     <!-- Meditation 1 -->
-                    <div class="bg-emerald-900/40 border border-emerald-500/20 rounded-3xl p-6 flex items-center justify-between hover:bg-emerald-800/40 transition-colors">
-                        <div class="flex items-center gap-5">
-                            <div class="text-4xl">🧘‍♀️</div>
-                            <div>
-                                <h4 class="text-xl font-bold text-white mb-1">Calming Breath</h4>
-                                <p class="text-emerald-100/60 text-sm">Focus on your breath to find instant peace.</p>
-                                <span class="text-emerald-400 text-xs font-bold uppercase tracking-widest mt-2 block">3 Min</span>
-                            </div>
+                    <div class="flex-1 bg-emerald-900/40 border border-emerald-500/20 rounded-[32px] p-8 flex flex-col justify-between items-center text-center transition-all duration-500 ease-in-out hover:flex-[1.5] md:hover:flex-[1.8] hover:bg-emerald-800/40">
+                        <div class="text-5xl mb-6">🧘‍♀️</div>
+                        <div class="flex-1 flex flex-col justify-center mb-6">
+                            <h4 class="text-xl font-bold text-white mb-2">Calming Breath</h4>
+                            <p class="text-emerald-100/60 text-sm max-w-[200px] mx-auto">Focus on your breath to find instant peace.</p>
+                            <span class="text-emerald-400 text-xs font-bold uppercase tracking-widest mt-3 block">3 Min</span>
                         </div>
-                        <button onclick="this.innerText = this.innerText === '▶' ? '⏸' : '▶';" class="w-12 h-12 rounded-full bg-emerald-500 text-black flex items-center justify-center hover:scale-110 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all font-bold">
+                        <button class="shanti-play-btn w-12 h-12 rounded-full bg-emerald-500 text-black flex items-center justify-center hover:scale-110 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all font-bold" data-sound="796134" data-duration="180" data-title="Calming Breath">
                             ▶
                         </button>
                     </div>
                     <!-- Meditation 2 -->
-                    <div class="bg-indigo-900/40 border border-indigo-500/20 rounded-3xl p-6 flex items-center justify-between hover:bg-indigo-800/40 transition-colors">
-                        <div class="flex items-center gap-5">
-                            <div class="text-4xl">🪷</div>
-                            <div>
-                                <h4 class="text-xl font-bold text-white mb-1">Detachment Meditation</h4>
-                                <p class="text-indigo-100/60 text-sm">Practice non-attachment from outcomes.</p>
-                                <span class="text-indigo-400 text-xs font-bold uppercase tracking-widest mt-2 block">5 Min</span>
-                            </div>
+                    <div class="flex-1 bg-indigo-900/40 border border-indigo-500/20 rounded-[32px] p-8 flex flex-col justify-between items-center text-center transition-all duration-500 ease-in-out hover:flex-[1.5] md:hover:flex-[1.8] hover:bg-indigo-800/40">
+                        <div class="text-5xl mb-6">🪷</div>
+                        <div class="flex-1 flex flex-col justify-center mb-6">
+                            <h4 class="text-xl font-bold text-white mb-2">Detachment Meditation</h4>
+                            <p class="text-indigo-100/60 text-sm max-w-[200px] mx-auto">Practice non-attachment from outcomes.</p>
+                            <span class="text-indigo-400 text-xs font-bold uppercase tracking-widest mt-3 block">5 Min</span>
                         </div>
-                        <button onclick="this.innerText = this.innerText === '▶' ? '⏸' : '▶';" class="w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center hover:scale-110 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all font-bold">
+                        <button class="shanti-play-btn w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center hover:scale-110 hover:shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all font-bold" data-sound="796049" data-duration="300" data-title="Detachment Meditation">
                             ▶
                         </button>
                     </div>
                     <!-- Meditation 3 -->
-                    <div class="bg-amber-900/40 border border-amber-500/20 rounded-3xl p-6 flex items-center justify-between hover:bg-amber-800/40 transition-colors">
-                        <div class="flex items-center gap-5">
-                            <div class="text-4xl">🕉️</div>
-                            <div>
-                                <h4 class="text-xl font-bold text-white mb-1">Dharma Contemplation</h4>
-                                <p class="text-amber-100/60 text-sm">Reflect on your purpose and duty.</p>
-                                <span class="text-amber-400 text-xs font-bold uppercase tracking-widest mt-2 block">10 Min</span>
-                            </div>
+                    <div class="flex-1 bg-amber-900/40 border border-amber-500/20 rounded-[32px] p-8 flex flex-col justify-between items-center text-center transition-all duration-500 ease-in-out hover:flex-[1.5] md:hover:flex-[1.8] hover:bg-amber-800/40">
+                        <div class="text-5xl mb-6">🕉️</div>
+                        <div class="flex-1 flex flex-col justify-center mb-6">
+                            <h4 class="text-xl font-bold text-white mb-2">Dharma Contemplation</h4>
+                            <p class="text-amber-100/60 text-sm max-w-[200px] mx-auto">Reflect on your purpose and duty.</p>
+                            <span class="text-amber-400 text-xs font-bold uppercase tracking-widest mt-3 block">10 Min</span>
                         </div>
-                        <button onclick="this.innerText = this.innerText === '▶' ? '⏸' : '▶';" class="w-12 h-12 rounded-full bg-amber-500 text-black flex items-center justify-center hover:scale-110 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all font-bold">
+                        <button class="shanti-play-btn w-12 h-12 rounded-full bg-amber-500 text-black flex items-center justify-center hover:scale-110 hover:shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all font-bold" data-sound="239910" data-duration="600" data-title="Dharma Contemplation">
                             ▶
                         </button>
                     </div>
@@ -272,16 +266,60 @@
             </svg>
         </button>
         <div class="flex flex-col gap-10 text-3xl font-bold text-center">
-            <a href="philosophy.html" onclick="toggleMenu()">Philosophy</a>
-            <a href="#" onclick="toggleMenu()">Scripts</a>
-            <a href="#daily-drishti" onclick="toggleMenu()">Daily Drishti</a>
-            <a href="#" onclick="toggleMenu()">The Mission</a>
-            <button id="theme-toggle-btn-mobile" class="border border-current/20 py-3 px-8 rounded-2xl text-lg">Light Theme</button>
-            <button class="gold-btn py-4 px-10 rounded-2xl text-lg" onclick="toggleMenu();document.getElementById('divine-chat').scrollIntoView({behavior: 'smooth'});">Get Started</button>
+            <a href="index.html" onclick="toggleMenu()">Home</a>
+            <a href="chat.html" onclick="toggleMenu()">Chat</a>
+            <a href="philosophy.html" onclick="toggleMenu()">Gyaan</a>
+            <a href="shanti.html" onclick="toggleMenu()">Shanti Room</a>
+            <a href="karm.html" onclick="toggleMenu()">Karm & Drishti</a>
+            <a href="journal.html" onclick="toggleMenu()">Journal</a>
         </div>
     </div>
 
-        <!-- Firebase SDKs -->
+        <!-- Meditation Player Modal -->
+    <div id="meditation-player-modal" class="hidden fixed inset-0 z-[80] bg-black/95 backdrop-blur-md flex flex-col justify-between p-6 md:p-10 text-white">
+        <!-- Header -->
+        <div class="flex justify-between items-center w-full max-w-4xl mx-auto">
+            <button id="player-close-btn" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm font-semibold">
+                ← Exit Sanctuary
+            </button>
+            <h4 id="player-status" class="text-xs font-bold uppercase tracking-[0.2em] text-[#d4af37]">Calming Breath</h4>
+            <button id="player-fullscreen-btn" class="text-gray-400 hover:text-white transition-colors text-sm font-semibold flex items-center gap-1.5">
+                Full Screen ⛶
+            </button>
+        </div>
+        
+        <!-- Center Canvas & breathing text -->
+        <div class="flex-1 flex flex-col items-center justify-center relative">
+            <!-- Pulsing/Breathing Mandala Canvas -->
+            <canvas id="mandala-canvas" class="w-[300px] h-[300px] md:w-[450px] md:h-[450px] max-w-full aspect-square"></canvas>
+            
+            <!-- Breathing Guide Text -->
+            <div id="breathing-guide" class="text-lg md:text-xl font-medium tracking-wide text-[#d4af37] h-8 mt-8 animate-pulse text-center">
+                Prepare to breathe...
+            </div>
+        </div>
+        
+        <!-- Bottom Controls -->
+        <div class="w-full max-w-xl mx-auto flex flex-col gap-6 items-center">
+            <!-- Time Indicator -->
+            <div class="flex justify-between items-center w-full text-xs text-gray-400 font-mono">
+                <span id="player-current-time">0:00</span>
+                <div class="flex-1 mx-4 h-1.5 bg-white/10 rounded-full overflow-hidden relative">
+                    <div id="player-progress-bar" class="absolute left-0 top-0 h-full bg-[#d4af37] w-0 transition-all duration-300"></div>
+                </div>
+                <span id="player-total-time">3:00</span>
+            </div>
+            
+            <!-- Play/Pause Button -->
+            <div class="flex items-center gap-8 mb-6">
+                <button id="player-play-btn" class="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all text-xl font-bold">
+                    ⏸
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>

@@ -92,6 +92,23 @@ try {
 }
 
 // Gita API Endpoints
+app.get('/api/gita/random', (req, res) => {
+    if (!gitaVerses || gitaVerses.length === 0) {
+        return res.status(500).json({ error: "Gita database not loaded" });
+    }
+    const randomIndex = Math.floor(Math.random() * gitaVerses.length);
+    const randomVerse = gitaVerses[randomIndex];
+    // Filter translations matching this chapter and verse
+    const verseTranslations = gitaTranslations.filter(t => 
+        t.chapter_number === randomVerse.chapter_number && 
+        t.verse_number === randomVerse.verse_number
+    );
+    res.json({
+        verse: randomVerse,
+        translations: verseTranslations
+    });
+});
+
 app.get('/api/gita/chapters', (req, res) => {
     res.json(gitaChapters);
 });

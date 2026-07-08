@@ -123,12 +123,41 @@ function setLanguage(lang) {
     if(drishtiQuoteEl) getNewDrishti();
 }
 
-function getNewDrishti() {
+async function getNewDrishti() {
     if(!drishtiQuoteEl) return;
-    const list = drishtiQuotes[currentLanguage];
-    const pick = list[Math.floor(Math.random() * list.length)];
-    drishtiQuoteEl.textContent = pick.quote;
-    drishtiCitationEl.textContent = pick.citation;
+    
+    drishtiQuoteEl.textContent = "...";
+    drishtiCitationEl.textContent = "...";
+    
+    try {
+        const res = await fetch('/api/gita/random');
+        if (!res.ok) throw new Error("Random verse fetch failed");
+        const data = await res.json();
+        
+        const verse = data.verse;
+        const translations = data.translations;
+        
+        // Find a translation for the quote
+        let translationText = "";
+        if (currentLanguage === 'hi') {
+            const hiTrans = translations.find(t => t.author_name.includes('Adgadanand') || t.author_name.includes('Ramsukhdas') || t.description.match(/[\u0900-\u097F]/));
+            translationText = hiTrans ? hiTrans.description : (translations[0] ? translations[0].description : "");
+        } else {
+            const enTrans = translations.find(t => t.author_name.includes('Sivananda') || t.author_name.includes('Srimad') || !t.description.match(/[\u0900-\u097F]/));
+            translationText = enTrans ? enTrans.description : (translations[0] ? translations[0].description : "");
+        }
+        
+        // Render shlok + translation
+        drishtiQuoteEl.innerHTML = `<span class="italic font-semibold text-gradient">"${translationText}"</span><br><span class="block text-sm opacity-60 mt-3 font-mono leading-relaxed">${verse.text}</span>`;
+        drishtiCitationEl.textContent = `Bhagavad Gita ${verse.chapter_number}.${verse.verse_number}`;
+    } catch (err) {
+        console.error("Error getting dynamic drishti:", err);
+        // Fallback to static quotes if server is not fully loaded/accessible
+        const list = drishtiQuotes[currentLanguage] || drishtiQuotes['en'];
+        const pick = list[Math.floor(Math.random() * list.length)];
+        drishtiQuoteEl.textContent = pick.quote;
+        drishtiCitationEl.textContent = pick.citation;
+    }
 }
 
 async function getGeminiResponse(message) {
@@ -729,40 +758,444 @@ if (karmButtons.length > 0) {
     });
 }
 
-// Shanti Room Timers
-document.querySelectorAll('button').forEach(btn => {
-    if (btn.textContent.includes('Play')) {
-        const titleEl = btn.parentElement.querySelector('h3');
-        if (titleEl && titleEl.textContent.includes('Min')) {
-            btn.addEventListener('click', (e) => {
-                if (btn.disabled) return;
+// Shanti Room - Immersive Freesound Meditation Player & Visualizer
+const shantiPlayButtons = document.querySelectorAll('.shanti-play-btn');
+const playerModal = document.getElementById('meditation-player-modal');
+const playerCloseBtn = document.getElementById('player-close-btn');
+const playerFullscreenBtn = document.getElementById('player-fullscreen-btn');
+const playerStatus = document.getElementById('player-status');
+const breathingGuide = document.getElementById('breathing-guide');
+const playerCurrentTime = document.getElementById('player-current-time');
+const playerTotalTime = document.getElementById('player-total-time');
+const playerProgressBar = document.getElementById('player-progress-bar');
+const playerPlayBtn = document.getElementById('player-play-btn');
+const mandalaCanvas = document.getElementById('mandala-canvas');
+
+let activeAudio = null;
+let activeInterval = null;
+let activeBtn = null;
+let currentRemainingTime = 0;
+let originalDuration = 0;
+let activeTitle = "";
+const freesoundToken = 'yo9LNvlc7YaNDpymYlfd6ObKf1vX9PpXQwGkjXTc';
+
+// Web Audio API Context for visualizer
+let audioCtx = null;
+let analyser = null;
+let source = null;
+let dataArray = null;
+let animationFrameId = null;
+
+if (shantiPlayButtons.length > 0) {
+    shantiPlayButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const soundId = btn.getAttribute('data-sound');
+            const durationSec = parseInt(btn.getAttribute('data-duration'));
+            const title = btn.getAttribute('data-title');
+
+            activeBtn = btn;
+            originalDuration = durationSec;
+            currentRemainingTime = durationSec;
+            activeTitle = title;
+
+            // Open the immersive player modal
+            if (playerModal) {
+                playerModal.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+            if (playerStatus) playerStatus.textContent = title;
+            if (playerTotalTime) playerTotalTime.textContent = formatTime(durationSec);
+            if (playerPlayBtn) playerPlayBtn.textContent = '⏳'; // Loading indicator
+
+            try {
+                // Fetch Freesound track details
+                const res = await fetch(`https://freesound.org/apiv2/sounds/${soundId}/?token=${freesoundToken}`);
+                if (!res.ok) throw new Error("Freesound track load failed");
+                const data = await res.json();
+                const mp3Url = data.previews && data.previews['preview-hq-mp3'];
+                if (!mp3Url) throw new Error("No MP3 preview link available");
+
+                // Setup Audio
+                if (activeAudio) {
+                    activeAudio.pause();
+                    activeAudio = null;
+                }
+                activeAudio = new Audio();
+                activeAudio.src = mp3Url;
+                activeAudio.loop = true;
+
+                // Try to initialize Web Audio Visualizer (handle CORS restrictions gracefully)
+                try {
+                    activeAudio.crossOrigin = "anonymous";
+                    initVisualizer(activeAudio);
+                } catch (e) {
+                    console.warn("CORS or Web Audio error, falling back to procedural visualizer:", e);
+                    analyser = null;
+                }
+
+                // Start playback
+                await activeAudio.play();
+                if (playerPlayBtn) playerPlayBtn.textContent = '⏸';
                 
-                // Extract minutes from title
-                const mins = parseInt(titleEl.textContent);
-                if (isNaN(mins)) return;
+                // Start Timer
+                startMeditationTimer();
                 
-                btn.disabled = true;
-                btn.classList.add('bg-[#d4af37]/20', 'text-[#d4af37]');
+                // Start Canvas visualizer animation loop
+                startVisualizerAnimation();
                 
-                let timeLeft = mins * 60;
-                const updateTimer = () => {
-                    const m = Math.floor(timeLeft / 60);
-                    const s = timeLeft % 60;
-                    btn.textContent = `${m}:${s.toString().padStart(2, '0')}`;
-                    
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        setTimeout(updateTimer, 1000);
-                    } else {
-                        btn.textContent = "Complete ✓";
-                        saveToJournal(`Completed ${mins} Minute Meditation`, 'Meditation');
-                    }
-                };
-                updateTimer();
-            });
-        }
+            } catch (err) {
+                console.error("Freesound Playback Error:", err);
+                if (playerPlayBtn) playerPlayBtn.textContent = '❌';
+                if (breathingGuide) breathingGuide.textContent = "Error loading audio. Please try again.";
+                setTimeout(() => {
+                    closeSanctuary();
+                }, 3000);
+            }
+        });
+    });
+}
+
+function initVisualizer(audioElement) {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 128;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
     }
-});
+    if (!source) {
+        source = audioCtx.createMediaElementSource(audioElement);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+    }
+}
+
+function startMeditationTimer() {
+    if (activeInterval) clearInterval(activeInterval);
+
+    activeInterval = setInterval(() => {
+        if (!activeAudio || activeAudio.paused) return; // Freeze timer if paused
+
+        if (currentRemainingTime <= 0) {
+            clearInterval(activeInterval);
+            saveToJournal(`Completed ${Math.round(originalDuration / 60)} Minute "${activeTitle}" Meditation session in Shanti Room.`, 'Meditation');
+            
+            if (activeBtn) {
+                activeBtn.textContent = 'Complete ✓';
+                activeBtn.disabled = true;
+                activeBtn.classList.remove('bg-emerald-500', 'bg-indigo-500', 'bg-amber-500');
+                activeBtn.classList.add('bg-gray-500', 'opacity-50', 'cursor-not-allowed');
+            }
+
+            if (breathingGuide) breathingGuide.textContent = "Meditation Complete. Namaste.";
+            if (playerPlayBtn) {
+                playerPlayBtn.textContent = '✓';
+                playerPlayBtn.disabled = true;
+            }
+            return;
+        }
+
+        currentRemainingTime--;
+
+        // Update timer UI
+        if (playerCurrentTime) playerCurrentTime.textContent = formatTime(originalDuration - currentRemainingTime);
+        if (playerProgressBar) {
+            const progress = ((originalDuration - currentRemainingTime) / originalDuration) * 100;
+            playerProgressBar.style.width = `${progress}%`;
+        }
+    }, 1000);
+}
+
+// Fullscreen logic
+if (playerFullscreenBtn) {
+    playerFullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            playerModal.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+            playerFullscreenBtn.textContent = 'Exit Full Screen ⛶';
+        } else {
+            document.exitFullscreen();
+            playerFullscreenBtn.textContent = 'Full Screen ⛶';
+        }
+    });
+}
+
+// Play/Pause toggle inside player
+if (playerPlayBtn) {
+    playerPlayBtn.addEventListener('click', () => {
+        if (!activeAudio) return;
+        
+        if (activeAudio.paused) {
+            activeAudio.play().catch(err => console.error(err));
+            playerPlayBtn.textContent = '⏸';
+            if (breathingGuide) breathingGuide.classList.remove('opacity-50');
+        } else {
+            activeAudio.pause();
+            playerPlayBtn.textContent = '▶';
+            if (breathingGuide) breathingGuide.textContent = "Meditation Paused";
+            if (breathingGuide) breathingGuide.classList.add('opacity-50');
+        }
+    });
+}
+
+// Close/Exit player modal
+if (playerCloseBtn) {
+    playerCloseBtn.addEventListener('click', () => {
+        closeSanctuary();
+    });
+}
+
+function closeSanctuary() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(err => console.log(err));
+    }
+    if (playerModal) playerModal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+
+    if (activeAudio) {
+        activeAudio.pause();
+        activeAudio = null;
+    }
+    if (activeInterval) {
+        clearInterval(activeInterval);
+        activeInterval = null;
+    }
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+    if (playerProgressBar) playerProgressBar.style.width = '0%';
+    if (playerCurrentTime) playerCurrentTime.textContent = '0:00';
+    if (playerPlayBtn) playerPlayBtn.disabled = false;
+    
+    // Reset play buttons on shanti list
+    if (activeBtn && activeBtn.textContent !== 'Complete ✓') {
+        activeBtn.textContent = '▶';
+    }
+    activeBtn = null;
+}
+
+function formatTime(secs) {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// -------------------------------------
+// CANVAS MANDALA VISUALIZER GRAPHICS
+// -------------------------------------
+function startVisualizerAnimation() {
+    if (!mandalaCanvas) return;
+    const ctx = mandalaCanvas.getContext('2d');
+    
+    // Set high-DPI canvas bounds
+    const resizeCanvas = () => {
+        const rect = mandalaCanvas.getBoundingClientRect();
+        mandalaCanvas.width = rect.width * window.devicePixelRatio;
+        mandalaCanvas.height = rect.height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let rotationAngle = 0;
+
+    const draw = () => {
+        animationFrameId = requestAnimationFrame(draw);
+
+        const width = mandalaCanvas.width / window.devicePixelRatio;
+        const height = mandalaCanvas.height / window.devicePixelRatio;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // 1. Theme and Color Adjustments for high contrast
+        const isLight = document.body.classList.contains('light-theme');
+        
+        // Dynamic UI Text Color overrides for high contrast
+        if (isLight) {
+            if (playerStatus) playerStatus.style.color = '#8e2400';
+            if (breathingGuide) breathingGuide.style.color = '#8e2400';
+            if (playerCurrentTime) playerCurrentTime.style.color = '#3e2723';
+            if (playerTotalTime) playerTotalTime.style.color = '#3e2723';
+        } else {
+            if (playerStatus) playerStatus.style.color = '#d4af37';
+            if (breathingGuide) breathingGuide.style.color = '#d4af37';
+            if (playerCurrentTime) playerCurrentTime.style.color = '#9ca3af';
+            if (playerTotalTime) playerTotalTime.style.color = '#9ca3af';
+        }
+
+        // High contrast colors in Light Mode, glowing subtle colors in Dark Mode
+        const coreColor = isLight ? 'rgba(0, 105, 92, 0.9)' : 'rgba(16, 185, 129, 0.45)';
+        const middleColor = isLight ? 'rgba(181, 137, 0, 0.9)' : 'rgba(212, 175, 55, 0.35)';
+        const outerColor = isLight ? 'rgba(216, 67, 21, 0.9)' : 'rgba(249, 115, 22, 0.25)';
+        const waveColor = isLight ? 'rgba(216, 67, 21, 0.45)' : 'rgba(212, 175, 55, 0.2)';
+        const starColor = isLight ? 'rgba(0, 105, 92, 0.5)' : 'rgba(16, 185, 129, 0.25)';
+        const auraColor = isLight ? 'rgba(181, 137, 0, 0.08)' : 'rgba(212, 175, 55, 0.06)';
+
+        // 2. Calculate breathing cycle (12 second period: 4s inhale, 4s hold, 4s exhale)
+        const timeSec = (Date.now() / 1000) % 12;
+        let scaleFactor = 1.0;
+        let breathText = "";
+
+        if (activeAudio && activeAudio.paused) {
+            breathText = "Meditation Paused";
+            scaleFactor = 1.0;
+        } else {
+            if (timeSec < 4) {
+                // Inhale (grow)
+                scaleFactor = 0.8 + (timeSec / 4) * 0.4;
+                breathText = "Inhale slowly...";
+            } else if (timeSec < 8) {
+                // Hold
+                scaleFactor = 1.2;
+                breathText = "Hold your breath...";
+            } else {
+                // Exhale (shrink)
+                scaleFactor = 1.2 - ((timeSec - 8) / 4) * 0.4;
+                breathText = "Exhale slowly...";
+            }
+        }
+        if (breathingGuide) breathingGuide.textContent = breathText;
+
+        // 3. Query audio data for vibrations
+        let vibrationIntensity = 0;
+        let waveData = [];
+
+        if (analyser && dataArray && (!activeAudio || !activeAudio.paused)) {
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                sum += dataArray[i];
+                waveData.push(dataArray[i]);
+            }
+            vibrationIntensity = sum / dataArray.length;
+        } else {
+            // Procedural vibration fallback
+            const speed = activeAudio && !activeAudio.paused ? 0.05 : 0;
+            vibrationIntensity = (Math.sin(Date.now() * speed) + 1) * 8;
+            for (let i = 0; i < 64; i++) {
+                waveData.push(Math.sin((i + Date.now() * 0.1) * 0.5) * 30 + 35);
+            }
+        }
+
+        // Accumulate rotation angle
+        if (activeAudio && !activeAudio.paused) {
+            rotationAngle += 0.005 + (vibrationIntensity * 0.0003);
+        }
+
+        // Draw background subtle aura ripples
+        const baseRadius = 60 * scaleFactor;
+        const rippleCount = 4;
+        for (let i = 0; i < rippleCount; i++) {
+            const rippleRadius = baseRadius + (i * 30) + (vibrationIntensity * 0.3);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, rippleRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = auraColor;
+            ctx.lineWidth = isLight ? 2 : 1.5;
+            ctx.stroke();
+        }
+
+        // Helper to draw a single ring layer with rotation and morphing
+        const drawMandalaRing = (radius, petalCount, color, layerRotation, petalWidth = 2, petalHeight = 15) => {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(layerRotation);
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = petalWidth;
+            ctx.fillStyle = 'none';
+
+            // Draw center ring
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Draw outer petals with time-based shape morphing
+            for (let i = 0; i < petalCount; i++) {
+                const angle = (i * Math.PI * 2) / petalCount;
+                ctx.save();
+                ctx.rotate(angle);
+                
+                // Add vibration & breathing to petal length
+                const audioModifier = waveData[i % waveData.length] ? (waveData[i % waveData.length] * 0.08) : 0;
+                const finalPetalHeight = petalHeight * scaleFactor + audioModifier;
+
+                // Procedural morphing: sway the control points of the petals over time
+                const morphX = Math.sin(Date.now() * 0.001 + angle * 2) * 4 * scaleFactor;
+                const morphY = Math.cos(Date.now() * 0.0008 + angle * 2) * 2 * scaleFactor;
+
+                ctx.beginPath();
+                ctx.moveTo(0, -radius);
+                ctx.quadraticCurveTo(finalPetalHeight / 2 + morphX, -radius - finalPetalHeight / 2 + morphY, 0, -radius - finalPetalHeight);
+                ctx.quadraticCurveTo(-finalPetalHeight / 2 + morphX, -radius - finalPetalHeight / 2 + morphY, 0, -radius);
+                ctx.stroke();
+                ctx.restore();
+            }
+            ctx.restore();
+        };
+
+        // Draw Morphing Star Core in Center (Points morph slowly between 5 and 10)
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(-rotationAngle * 0.5);
+        ctx.strokeStyle = starColor;
+        ctx.lineWidth = 1;
+        const starPoints = 5 + Math.floor((Math.sin(Date.now() * 0.0006) + 1) * 2.5); // 5 to 10 points
+        const outerR = 10 * scaleFactor;
+        const innerR = 5 * scaleFactor;
+        ctx.beginPath();
+        for (let i = 0; i < starPoints * 2; i++) {
+            const angle = (i * Math.PI) / starPoints;
+            const r = i % 2 === 0 ? outerR : innerR;
+            const x = Math.cos(angle) * r;
+            const y = Math.sin(angle) * r;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+
+        // 4. Draw counter-rotating layers with dynamic radius morphing (geometry slides!)
+        const dynMiddleRadius = (35 + Math.sin(Date.now() * 0.001) * 6) * scaleFactor;
+        const dynOuterRadius = (65 + Math.cos(Date.now() * 0.0008) * 8) * scaleFactor;
+
+        // Inner Core Ring (Clockwise, fast)
+        drawMandalaRing(15 * scaleFactor, 8, coreColor, rotationAngle * 1.6, isLight ? 2 : 1, 6);
+        
+        // Middle Layer (Counter-Clockwise, medium speed, breathing radius)
+        drawMandalaRing(dynMiddleRadius, 16, middleColor, -rotationAngle * 0.7, isLight ? 2.5 : 1.5, 12);
+        
+        // Outermost Layer (Clockwise, slow, expanding radius)
+        drawMandalaRing(dynOuterRadius, 24, outerColor, rotationAngle * 0.35, isLight ? 3 : 2, 20);
+
+        // 5. Draw vibrating outer connection ring (counter-clockwise)
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(-rotationAngle * 0.15);
+        ctx.beginPath();
+        const outerWaveRadius = dynOuterRadius + (isLight ? 24 : 20);
+        for (let i = 0; i < 48; i++) {
+            const angle = (i * Math.PI * 2) / 48;
+            const audioModifier = waveData[i % waveData.length] ? (waveData[i % waveData.length] * 0.18) : 0;
+            const r = outerWaveRadius + audioModifier;
+            const x = Math.cos(angle) * r;
+            const y = Math.sin(angle) * r;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = waveColor;
+        ctx.lineWidth = isLight ? 1.8 : 1;
+        ctx.stroke();
+        ctx.restore();
+    };
+
+    draw();
+}
 
 // -------------------------------------
 // FIREBASE AUTH & FIREBASE SYNC LOGIC
